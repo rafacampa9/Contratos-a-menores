@@ -42,8 +42,7 @@ public class Ctrl {
     public LinkedHashSet<FilaDatos> listaRegistros(){
         fichero = new FicheroXML();
         nodeList = new XPathStore();
-        documento = fichero.cargarFicheroXML("D:\\Escritorio\\fp DAM\\2º Año\\Acceso a Datos"
-                                                    + "\\Trabajo\\contratos-a-menores.xml");
+        documento = fichero.cargarFicheroXML("contratos-a-menores.xml");
         listaNodos = nodeList.listaNodos(documento, "//Table/Row");
         LinkedHashSet<FilaDatos> listaFilas = new LinkedHashSet<>();
         
