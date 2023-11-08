@@ -48,6 +48,7 @@ public class CtrlVista implements ActionListener{
         ventana.setTitle("Contratos a menores");
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
+        ventana.setResizable(false);
     }
     
     public void limpiar(){

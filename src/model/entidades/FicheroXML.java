@@ -22,7 +22,7 @@ public class FicheroXML {
     public Document cargarFicheroXML(String path){
         try{
             DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
-            //factory.setValidating(true);
+            
             factory.setIgnoringElementContentWhitespace(true);
         
             DocumentBuilder builder = factory.newDocumentBuilder();

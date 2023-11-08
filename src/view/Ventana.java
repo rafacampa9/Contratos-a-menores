@@ -52,10 +52,10 @@ public class Ventana extends javax.swing.JFrame {
 
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnInsert.setText("Insertar los datos en la tabla");
+        btnInsert.setText("Insertar los registros en la tabla");
         jPanel3.add(btnInsert, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, -1, -1));
 
-        btnRead.setText("Leer los datos de la tabla ");
+        btnRead.setText("Leer los registros de la tabla ");
         jPanel3.add(btnRead, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 40, -1, -1));
 
         btnXML.setText("Generar archivo XML");
