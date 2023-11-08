@@ -387,7 +387,6 @@ public class Ctrl {
             StreamResult result = new StreamResult(new File("datos del gobierno sobre contratos a menores.xml"));
             transformer.transform(source, result);
             
-            System.out.println("Archivo XML generado correctamente. ");
             JOptionPane.showMessageDialog(null, "Archivo generado correctamente");
         } catch (ParserConfigurationException | TransformerException e){
             e.printStackTrace();

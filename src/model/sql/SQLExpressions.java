@@ -53,7 +53,6 @@ public class SQLExpressions {
                 
                 ps.executeUpdate();
             }
-            System.out.println("Registros insertados correctamente");
             return true;
         } catch (SQLException ex){
             ex.printStackTrace();
