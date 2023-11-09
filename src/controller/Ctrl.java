@@ -64,10 +64,10 @@ public class Ctrl {
             fechaAdjudicacion = new Date();
          
             switch (dataNodes.getLength())
-            {
+            {               
                 case 8 ->
                 {
-                    try{
+                    try{   
                         nif = line.getElementsByTagName("Data")
                                 .item(0)
                                 .getTextContent();
@@ -204,13 +204,22 @@ public class Ctrl {
                             .item(1)
                             .getTextContent();
                     fechaAdjudicacion = null;
-                    if (line.getElementsByTagName("Data")
+                    if ((line.getElementsByTagName("Data")
                             .item(2)
                             .getTextContent()
                             .equals("ACTIVIDAD/REUNIONES")
                             && line.getElementsByTagName("Data")
                                     .item(3).getTextContent()
-                                    .equals(" CONFERENCIAS Y CURSOS")){
+                                    .equals(" CONFERENCIAS Y CURSOS"))
+                            ||
+                            line.getElementsByTagName("Data")
+                            .item(2)
+                            .getTextContent()
+                            .equals("ACTIVIDAD/REUNIONES")
+                            && line.getElementsByTagName("Data")
+                            .item(3)
+                            .getTextContent()
+                            .equals("CONFERENCIAS Y CURSOS")){
                         
                         
                         objetoGenerico = line.getElementsByTagName("Data")

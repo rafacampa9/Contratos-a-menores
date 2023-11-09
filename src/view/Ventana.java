@@ -41,7 +41,7 @@ public class Ventana extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setLayout(new java.awt.GridLayout());
+        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -53,13 +53,13 @@ public class Ventana extends javax.swing.JFrame {
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnInsert.setText("Insertar los registros en la tabla");
-        jPanel3.add(btnInsert, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 10, -1, -1));
+        jPanel3.add(btnInsert, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 10, -1, -1));
 
         btnRead.setText("Leer los registros de la tabla ");
-        jPanel3.add(btnRead, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 40, -1, -1));
+        jPanel3.add(btnRead, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 40, -1, -1));
 
         btnXML.setText("Generar archivo XML");
-        jPanel3.add(btnXML, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 70, -1, -1));
+        jPanel3.add(btnXML, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 70, -1, -1));
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -82,7 +82,7 @@ public class Ventana extends javax.swing.JFrame {
         jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 870, 210));
 
         btnDelete.setText("Eliminar registros de la tabla");
-        jPanel3.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 100, -1, -1));
+        jPanel3.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 100, -1, -1));
 
         jPanel1.add(jPanel3, java.awt.BorderLayout.CENTER);
 
