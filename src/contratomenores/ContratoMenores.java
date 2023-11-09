@@ -6,8 +6,6 @@ package contratomenores;
 
 import controller.Ctrl;
 import controller.CtrlVista;
-import java.util.LinkedHashSet;
-import model.entidades.FilaSinTipoContrato;
 import model.sql.SQLExpressions;
 import view.Ventana;
 
@@ -21,25 +19,11 @@ public class ContratoMenores {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        /*Ctrl ctrl = new Ctrl();
-        LinkedHashSet<FilaSinTipoContrato> lista;
- 
-        
-        SQLExpressions sql = new SQLExpressions();
-        
-        lista = sql.leerSinTipoContrato();
-        
-        ctrl.generarXML(lista);*/
-        
         Ventana ventana = new Ventana();
         SQLExpressions sql = new SQLExpressions();
         Ctrl c = new Ctrl();
         CtrlVista ctrl = new CtrlVista(ventana, sql, c);
-        ctrl.iniciar();
-        
-        
-
-        
+        ctrl.iniciar();  
     }
     
 }
