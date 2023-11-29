@@ -57,6 +57,12 @@ public class SQLExpressions {
         } catch (SQLException ex){
             ex.printStackTrace();
             return false;
+        } finally{
+            try{
+                conexion.close();
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     
     }
@@ -96,6 +102,12 @@ public class SQLExpressions {
             }
         } catch (SQLException e){
             e.printStackTrace();
+        } finally{
+            try{
+                conexion.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
         }
         return registros;
     }
@@ -136,6 +148,12 @@ public class SQLExpressions {
             }
         } catch (SQLException e){
             e.printStackTrace();
+        } finally{
+            try{
+                conexion.close();
+            } catch(SQLException e){
+                e.printStackTrace();
+            }
         }
         return registros;
     }
@@ -158,5 +176,17 @@ public class SQLExpressions {
             ex.printStackTrace();
             return false;
         }
+        finally
+        {
+            try
+            {
+                conexion.close();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        
+    }
     }
 }
