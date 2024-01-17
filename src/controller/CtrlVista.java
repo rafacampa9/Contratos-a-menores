@@ -21,12 +21,15 @@ import view.Ventana;
  */
 public class CtrlVista implements ActionListener{
     
-    private Ventana ventana;
-    private SQLExpressions sql;
-    private Ctrl ctrl;
+    //***********************************ATRIBUTOS*******************************************
+    private final Ventana ventana;
+    private final SQLExpressions sql;
+    private final Ctrl ctrl;
     private LinkedHashSet<FilaDatos> filas;
     private LinkedHashSet<FilaSinTipoContrato> filasSN;
     private ButtonGroup grupo = new ButtonGroup();
+    
+    
 
     public CtrlVista(Ventana ventana, SQLExpressions sql, Ctrl ctrl) {
         this.ventana = ventana;
@@ -44,6 +47,11 @@ public class CtrlVista implements ActionListener{
                
     }
     
+    //************************************MÉTODOS********************************************
+    
+    /**
+     * Método para iniciar la ventana
+     */
     public void iniciar(){
         ventana.setTitle("Contratos a menores");
         ventana.setLocationRelativeTo(null);
@@ -51,17 +59,44 @@ public class CtrlVista implements ActionListener{
         ventana.setResizable(false);
     }
     
-    public void limpiar(){
+    
+    
+    /**
+     * Vaciar el contenido de la tabla
+     */
+    public void limpiar(){   
         DefaultTableModel table = (DefaultTableModel) ventana.table.getModel();
         table.setRowCount(0);
     }
 
+    
+    
+    /**
+     * Método vinculado a la escucha
+     * del ActionEvent
+     * @param e 
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
+        /**
+         * Si pulsamos insertar
+         */
         if (e.getSource() == ventana.btnInsert){
+            //limpiamos la tabla
             limpiar();
+            //le pasamos a las filas el método listaRegistros()
             filas = ctrl.listaRegistros();
+            //insertamos el registro
             boolean insertado = sql.insertar(filas);
+            /**
+             * Si se ha realizado la inserción nos muestra
+             * un mensaje de diálogo que nos dice que se 
+             * han insertado correctamente.
+             * 
+             * Si no se puede realizar la inserción, nos devuelve
+             * un mensaje de diálogo que nos informa que no se han
+             * podido insertar 
+             */
             if (insertado)
                 JOptionPane.showMessageDialog(
                         null,
@@ -74,11 +109,22 @@ public class CtrlVista implements ActionListener{
                 );
         }
         
+        
+        
+        
+        
+        /**
+         * Si pulsamos el botón de Leer
+         */
+        
         if (e.getSource() == ventana.btnRead){
+            //tenemos el método leer de la clase SQLExpressions
             filas = sql.leer();
             
             DefaultTableModel table = (DefaultTableModel) ventana.table.getModel();
-            
+            /**
+             * Añadimos los registros a la tabla
+             */
             for (FilaDatos fila: filas){
                 Object [] f = {
                         fila.getNif(), fila.getAdjudicatario(), fila.getObjetoGenerico(),
@@ -90,16 +136,42 @@ public class CtrlVista implements ActionListener{
             
         }
         
+        
+        
+        
+        
+        /**
+         * Si pulsamos GENERAR archivo XML
+         */
         if (e.getSource() == ventana.btnXML){
+            //Limpiamos la tabla
             limpiar();
+            //Introducimos en la variable filasSN las filas sin tipo contrato
             filasSN = sql.leerSinTipoContrato(); 
+            //Generamos el archivo con el método generarXML de la clase Ctrl
             ctrl.generarXML(filasSN);
         }
         
+        
+        
+        
+        /**
+         * Si pulsamos ELIMINAR archivo
+         */
         if (e.getSource() == ventana.btnDelete){
+            //limpiamos la tabla
             limpiar();
+            
+            //borramos el registro y devolvemos un booleano
             boolean borrado = sql.borrarRegistros();
             
+            /**
+             * Si se ha realizado el borrado correctamente,
+             * mostramos un mensaje de diálogo indicándolo.
+             * 
+             * Si no, también se indicará mediante un mensaje
+             * de diálogo
+             */
             if (borrado)
                 JOptionPane.showMessageDialog(
                         null, 

@@ -16,11 +16,23 @@ import org.w3c.dom.NodeList;
  * @author rafacampa9
  */
 public class XPathStore {
+    
+    /**
+     * A este método le pasamos por parámetro un 
+     * documento y la expresión XPATH y nos devuelve
+     * la lista de nodos
+     * 
+     * @param doc
+     * @param expresion
+     * @return 
+     */
     public NodeList listaNodos (Document doc, String expresion) {
         try{
             XPath xpath = XPathFactory.newInstance().newXPath();
-            NodeList nodeList = (NodeList) xpath.compile(expresion).evaluate(
-                doc, XPathConstants.NODESET
+            NodeList nodeList = (NodeList) xpath.compile(expresion).
+                    evaluate(
+                            doc, 
+                            XPathConstants.NODESET
             );
             return nodeList;
         } catch(XPathExpressionException e){

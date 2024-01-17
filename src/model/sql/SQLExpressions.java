@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 
 import model.entidades.FilaDatos;
 import model.entidades.FilaSinTipoContrato;
@@ -24,9 +24,24 @@ public class SQLExpressions {
     
     private final Conexion conn = new Conexion();
     
-    // Métodos
+    // ***************************MÉTODOS***************************************
+    /**
+     * Para insertar la lista de registros
+     * que tenemos en un LinkedHashSet y devuelve
+     * true si se inserta o false, en caso de que
+     * no sea posible (salte una Excepción)
+     * 
+     * @param lista
+     * @return 
+     */
     public boolean insertar(LinkedHashSet<FilaDatos> lista){
-        
+        /**
+         * Conectamos con la base de datos
+         * y preparamos el insert según
+         * la cantidad de campos que queramos
+         * rellenar (en este caso, 8)
+         */
+         
         Connection conexion = conn.conectarDB();
         PreparedStatement ps = null;
         String insert = """
@@ -34,6 +49,7 @@ public class SQLExpressions {
                         (?, ?, ?, ?, ?, ?, ?, ?)
                         """;
         
+        //Aquí comienza el código a tratar con SQLExcepción
         try {
             
             ps = conexion.prepareStatement(insert);
@@ -43,10 +59,15 @@ public class SQLExpressions {
                 ps.setString(2, fila.getAdjudicatario());
                 ps.setString(3, fila.getObjetoGenerico());
                 ps.setString(4, fila.getObjeto());
-                if (fila.getFechaAdjudicacion()!=null)
-                    ps.setDate(5, new java.sql.Date(fila.getFechaAdjudicacion().getTime()));
-                else
+                if (fila.getFechaAdjudicacion()!=null){
+                    ps.setDate(5, new java.sql.Date(
+                                        fila.
+                                                getFechaAdjudicacion().
+                                                getTime()
+                    ));
+                }else{
                     ps.setDate(5, null);
+                }
                 ps.setString(6, fila.getImporte());
                 ps.setString(7, fila.getProveedoresConsultados());
                 ps.setString(8, fila.getTipoContrato());
@@ -67,14 +88,22 @@ public class SQLExpressions {
     
     }
     
+    /**
+     * Leemos todos los datos
+     * del archivo XML proporcionado
+     * por el Gobierno
+     * 
+     * @return 
+     */
     public LinkedHashSet<FilaDatos> leer(){
-        
+        //Conectamos
         Connection conexion = conn.conectarDB();
+        //Instanciamos un LinkedHashSet para obtener los registros
         LinkedHashSet<FilaDatos> registros = new LinkedHashSet<>();
         FilaDatos fila;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+        //Consulta SELECT de todo
         String select = """
                         SELECT * FROM DATOS_GOB
                         """;
@@ -85,21 +114,40 @@ public class SQLExpressions {
             
             while (rs.next()){
                 fila = new FilaDatos();
+                //NIF
                 fila.setNif(rs.getString("nif"));
-                fila.setAdjudicatario(rs.getString("adjudicatario"));
-                fila.setObjetoGenerico(rs.getString("objeto_generico"));
+                //Adjudicatario
+                fila.setAdjudicatario(
+                        rs.getString("adjudicatario"));
+                //Objeto Genérico
+                fila.setObjetoGenerico(
+                        rs.getString("objeto_generico"));
+                //Objeto
                 fila.setObjeto(rs.getString("objeto"));
-                if (rs.getString("fecha_adjudicacion")!=null)
-                    fila.setFechaAdjudicacion(rs.getDate("fecha_adjudicacion"));
-                else
+                //Fecha Adjudicación
+                if (rs.getString("fecha_adjudicacion")!=null){
+                    fila.setFechaAdjudicacion(
+                            rs.getDate(
+                                    "fecha_adjudicacion"
+                            ));
+                }else
                     fila.setFechaAdjudicacion(null);
+                //Importe
                 fila.setImporte(rs.getString("importe"));
-                fila.setProveedoresConsultados(rs.getString("proveedores_consultados"));
+                //Proveedores consultados
+                fila.setProveedoresConsultados(
+                        rs.getString(
+                                "proveedores_consultados"
+                        ));
+                //Tipo Contrato
                 fila.setTipoContrato(rs.getString("tipo_contrato"));
 
-                
+                //Agregamos el registo a la lista de registros
                 registros.add(fila);
             }
+            /**
+             * Excepciones
+             */
         } catch (SQLException e){
             e.printStackTrace();
         } finally{
@@ -109,9 +157,16 @@ public class SQLExpressions {
                 e.printStackTrace();
             }
         }
+        //retornamos los registros
         return registros;
     }
     
+    
+    /**
+     * Leemos todos los campos de la tabla DATOS_GOB
+     * salvo el campo tipoContrato
+     * @return 
+     */
     public LinkedHashSet<FilaSinTipoContrato> leerSinTipoContrato(){
         
         Connection conexion = conn.conectarDB();
@@ -119,7 +174,6 @@ public class SQLExpressions {
         FilaSinTipoContrato fila;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         String select = """
                         SELECT nif, adjudicatario, objeto_generico, objeto,
                         fecha_adjudicacion, importe, proveedores_consultados
@@ -133,15 +187,22 @@ public class SQLExpressions {
             while (rs.next()){
                 fila = new FilaSinTipoContrato();
                 fila.setNif(rs.getString("nif"));
-                fila.setAdjudicatario(rs.getString("adjudicatario"));
-                fila.setObjetoGenerico(rs.getString("objeto_generico"));
+                fila.setAdjudicatario(
+                        rs.getString(
+                                    "adjudicatario"));
+                fila.setObjetoGenerico(
+                        rs.getString("objeto_generico"));
                 fila.setObjeto(rs.getString("objeto"));
-                if (rs.getString("fecha_adjudicacion")!=null)
-                    fila.setFechaAdjudicacion(rs.getDate("fecha_adjudicacion"));
-                else
+                if (rs.getString("fecha_adjudicacion")!=null){
+                    fila.setFechaAdjudicacion(
+                            rs.getDate("fecha_adjudicacion"));
+                }else{
                     fila.setFechaAdjudicacion(null);
+                }
                 fila.setImporte(rs.getString("importe"));
-                fila.setProveedoresConsultados(rs.getString("proveedores_consultados"));
+                fila.setProveedoresConsultados(
+                        rs.getString(
+                                "proveedores_consultados"));
 
                 
                 registros.add(fila);
@@ -158,11 +219,18 @@ public class SQLExpressions {
         return registros;
     }
     
+    
+    /**
+     * Vaciamos la tabla DATOS_GOB
+     * con el comando TRUNCATE TABLE
+     * 
+     * @return 
+     */
     public boolean borrarRegistros(){
         Connection conexion = conn.conectarDB();
         PreparedStatement ps = null;
         String delete = """
-                        DELETE FROM DATOS_GOB
+                        TRUNCATE TABLE DATOS_GOB
                         """;
         
         try

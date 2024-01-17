@@ -37,21 +37,35 @@ public class Ctrl {
     private XPathStore nodeList;
     private FilaDatos filaDatos;
     private NodeList listaNodos;
-
     
+    
+    //*********************************MÉTODOS****************************************
+
+    /**
+     * Obtenemos la lista de todos los registros
+     * @return 
+     */
     public LinkedHashSet<FilaDatos> listaRegistros(){
         fichero = new FicheroXML();
         nodeList = new XPathStore();
+        //cargamos el fichero XML en nuestro Document
         documento = fichero.cargarFicheroXML("contratos-a-menores.xml");
+        //obtenemos las filas del fichero
         listaNodos = nodeList.listaNodos(documento, "//Table/Row");
         LinkedHashSet<FilaDatos> listaFilas = new LinkedHashSet<>();
         
+        /**
+         * iteramos sobre las filas del fichero
+         */
         for (int i = 1; i < listaNodos.getLength(); i++){
-            
+            //obtenemos la línea a la que hace referencia
             Element line = (Element) listaNodos.item(i);
             
+            //instanciamos una nueva lista de nodos con la etiqueta "Data"
+            // "//Table/Row/Data
             NodeList dataNodes = line.getElementsByTagName("Data");
             
+            //Inicializamos las columnas que contienen cada fila
             String nif = null;
             String adjudicatario = null;
             String objetoGenerico = null;
@@ -64,137 +78,115 @@ public class Ctrl {
             fechaAdjudicacion = new Date();
          
             switch (dataNodes.getLength())
-            {               
+            {     
+                /**
+                 * Si el tamaño de la lista de nodos es 8,
+                 * Índice 0: nif
+                 * Índice 1: adjudicatario
+                 * Índice 2: objetoGenerico
+                 * Índice 3: objeto
+                 * Índice 4: fechaStr (formato String), después obtenemos
+                 *              la fechaAdjudicacion en el formato que nos
+                 *              interese, dependiendo de la forma de devolverlo
+                 *              (Tratados en las excepciones)
+                 * Índice 5: importe
+                 * Índice 6: proveedoresConsultados
+                 * Índice 7: tipoContrato
+                 * 
+                 */  
                 case 8 ->
                 {
-                    try{   
-                        nif = line.getElementsByTagName("Data")
+                       
+                    nif = line.getElementsByTagName("Data")
                                 .item(0)
                                 .getTextContent();
-                        adjudicatario = line.getElementsByTagName("Data")
+                    adjudicatario = line.getElementsByTagName("Data")
                                 .item(1)
                                 .getTextContent();
-                        objetoGenerico = line.getElementsByTagName("Data")
+                    objetoGenerico = line.getElementsByTagName("Data")
                                 .item(2).getTextContent();
-                        objeto = line.getElementsByTagName("Data")
+                    objeto = line.getElementsByTagName("Data")
                                 .item(3).getTextContent();
-                        fechaStr = line.getElementsByTagName("Data")
+                    fechaStr = line.getElementsByTagName("Data")
                                 .item(4).getTextContent();
-                        
-                        fechaAdjudicacion = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SSS").
-                                parse(fechaStr);
-                        importe = line.getElementsByTagName("Data").item(5)
-                                .getTextContent();
-                        proveedoresConsultados = line.getElementsByTagName("Data")
-                                .item(6).getTextContent();
-                        tipoContrato = line.getElementsByTagName("Data")
-                                .item(7).getTextContent();
-                    } catch (ParseException e1){
+                    /**
+                     * El método parse de SimpleDateFormat hay
+                     * que tratarlo de tres formas para la fecha:
+                     *  - string de fecha "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                     *  - string de fecha "dd.MM.yyyy"
+                     *  - texto de fecha vacío
+                     */
+                    try{
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                                             ).parse(fechaStr);
+                    } catch(ParseException e1){
                         try{
-                            nif = line.getElementsByTagName("Data")
-                                    .item(0)
-                                    .getTextContent();
-                            adjudicatario = line.getElementsByTagName("Data")
-                                    .item(1)
-                                    .getTextContent();
-                            objetoGenerico = line.getElementsByTagName("Data")
-                                    .item(2).getTextContent();
-                            objeto = line.getElementsByTagName("Data")
-                                    .item(3).getTextContent();
-                            fechaStr = line.getElementsByTagName("Data")
-                                    .item(4).getTextContent();
-                            fechaAdjudicacion = new SimpleDateFormat ("dd.MM.yyyy")
-                                    .parse(fechaStr);
-                            importe = line.getElementsByTagName("Data").item(5)
-                                    .getTextContent();
-                            proveedoresConsultados = line.getElementsByTagName("Data")
-                                    .item(6).getTextContent();
-                            tipoContrato = line.getElementsByTagName("Data")
-                                    .item(7).getTextContent();
-                            
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "dd.MM.yyyy"
+                                            ).parse(fechaStr);
                         } catch (ParseException e2){
-                            nif = line.getElementsByTagName("Data")
-                                    .item(0)
-                                    .getTextContent();
-                            adjudicatario = line.getElementsByTagName("Data")
-                                    .item(1)
-                                    .getTextContent();
-                            objetoGenerico = line.getElementsByTagName("Data")
-                                    .item(2).getTextContent();
-                            objeto = line.getElementsByTagName("Data")
-                                    .item(3).getTextContent();
-                            importe = line.getElementsByTagName("Data").item(5)
-                                    .getTextContent();
-                            proveedoresConsultados = line.getElementsByTagName("Data")
-                                    .item(6).getTextContent();
-                            tipoContrato = line.getElementsByTagName("Data")
-                                    .item(7).getTextContent();
-                            
                             fechaAdjudicacion = null;
                         }
                     }
+                    importe = line.getElementsByTagName("Data").
+                                item(5)
+                                .getTextContent();
+                    proveedoresConsultados = line.getElementsByTagName("Data")
+                                .item(6).
+                                getTextContent();
+                    tipoContrato = line.getElementsByTagName("Data")
+                                .item(7).
+                                getTextContent();
+                     
                 }
+                //Registros del xml con 7 atributos en su fila
                 case 7 ->
                 {
+                    /**
+                    * Traen el nif y la Empresa en el índice 0
+                    */
                     String nifAndEmpresa = dataNodes.item(0).getTextContent();
+                    //Obtenemos el índice en el que se separan los dos valores
                     int separatorIndex = nifAndEmpresa.indexOf(' ');
-                    try{
-                        nif = nifAndEmpresa.substring(0, separatorIndex);
-                        adjudicatario = nifAndEmpresa.substring(separatorIndex + 1);
-
-                        objetoGenerico = line.getElementsByTagName("Data")
-                                .item(1).getTextContent();
-                        objeto = line.getElementsByTagName("Data")
-                                .item(2).getTextContent();
-                        fechaStr = line.getElementsByTagName("Data")
-                                .item(3).getTextContent();
-                        fechaAdjudicacion = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SSS").
-                                parse(fechaStr);
-                        importe = line.getElementsByTagName("Data").item(4)
-                                .getTextContent();
-                        proveedoresConsultados = line.getElementsByTagName("Data")
-                                .item(5).getTextContent();
-                        tipoContrato = line.getElementsByTagName("Data")
-                                .item(6).getTextContent();
+                    
                         
-                    } catch (ParseException e1){
+                    nif = nifAndEmpresa.substring(0, 
+                                separatorIndex);
+                    adjudicatario = nifAndEmpresa.substring(separatorIndex + 1);
+
+                    objetoGenerico = line.getElementsByTagName("Data")
+                                .item(1).getTextContent();
+                    objeto = line.getElementsByTagName("Data")
+                                .item(2).getTextContent();
+                    fechaStr = line.getElementsByTagName("Data")
+                                .item(3).getTextContent();
+                    /**
+                     * Tratamos la fecha según sus características
+                     */
+                    try{
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                                             ).parse(fechaStr);
+                    } catch(ParseException e1){
                         try{
-                            nif = nifAndEmpresa.substring(0, separatorIndex);
-                            adjudicatario = nifAndEmpresa.substring(separatorIndex + 1);
-                            
-                            objetoGenerico = line.getElementsByTagName("Data")
-                                    .item(1).getTextContent();
-                            objeto = line.getElementsByTagName("Data")
-                                    .item(2).getTextContent();
-                            fechaStr = line.getElementsByTagName("Data")
-                                    .item(3).getTextContent();
-                            fechaAdjudicacion = new SimpleDateFormat ("dd.MM.yyyy")
-                                    .parse(fechaStr);
-                            importe = line.getElementsByTagName("Data").item(4)
-                                    .getTextContent();
-                            proveedoresConsultados = line.getElementsByTagName("Data")
-                                    .item(5).getTextContent();
-                            tipoContrato = line.getElementsByTagName("Data")
-                                    .item(6).getTextContent();
-                            
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "dd.MM.yyyy"
+                                            ).parse(fechaStr);
                         } catch (ParseException e2){
-                            nif = nifAndEmpresa.substring(0, separatorIndex);
-                            adjudicatario = nifAndEmpresa.substring(separatorIndex + 1);
-                            
-                            objetoGenerico = line.getElementsByTagName("Data")
-                                    .item(1).getTextContent();
-                            objeto = line.getElementsByTagName("Data")
-                                    .item(2).getTextContent();
                             fechaAdjudicacion = null;
-                            importe = line.getElementsByTagName("Data").item(4)
-                                    .getTextContent();
-                            proveedoresConsultados = line.getElementsByTagName("Data")
-                                    .item(5).getTextContent();
-                            tipoContrato = line.getElementsByTagName("Data")
-                                    .item(6).getTextContent();
                         }
                     }
+                    importe = line.getElementsByTagName("Data").item(4)
+                                .getTextContent();
+                    proveedoresConsultados = line.getElementsByTagName("Data")
+                                .item(5).getTextContent();
+                    tipoContrato = line.getElementsByTagName("Data")
+                                .item(6).getTextContent();
+                    
+                    
                 }
+                //la fila cuenta con 9 columnas
                 case 9 ->
                 {
                     nif = line.getElementsByTagName("Data")
@@ -204,6 +196,14 @@ public class Ctrl {
                             .item(1)
                             .getTextContent();
                     fechaAdjudicacion = null;
+                    
+                    /**
+                     * Si el contenido de índice 2 de 
+                     * la fila es "ACTIVIDAD/REUNIONES" y en índice 3
+                     *  aparece "CONFERENCIAS Y CURSOS", el problema
+                     * que se da aquí es que esta columna al completo es 
+                     * el valor de objetoGenerico
+                     */
                     if ((line.getElementsByTagName("Data")
                             .item(2)
                             .getTextContent()
@@ -221,14 +221,32 @@ public class Ctrl {
                             .getTextContent()
                             .equals("CONFERENCIAS Y CURSOS")){
                         
-                        
                         objetoGenerico = line.getElementsByTagName("Data")
                                 .item(2).getTextContent() +
                                 line.getElementsByTagName("Data").item(3)
                                         .getTextContent();
                         objeto = line.getElementsByTagName("Data")
                                 .item(4).getTextContent();
-                        
+                        /**
+                         * Tratamos las dos excepciones de fecha
+                         */
+                        fechaStr = line.getElementsByTagName("Data")
+                                .item(5).getTextContent();
+                        try
+                        {
+                            fechaAdjudicacion = new SimpleDateFormat (
+                                    "yyyy-MM-dd'T'HH:mm:ss.SSS").
+                                    parse(fechaStr);
+                        } catch (ParseException e1)
+                        {
+                            try{
+                                fechaAdjudicacion = new SimpleDateFormat(
+                                        "dd.MM.yyyy"
+                                ).parse(fechaStr);
+                            } catch (ParseException e2){
+                                fechaAdjudicacion = null;
+                            }
+                        }
                         importe = line.getElementsByTagName("Data").item(6)
                                 .getTextContent();
                         proveedoresConsultados = line.getElementsByTagName("Data")
@@ -236,10 +254,33 @@ public class Ctrl {
                         tipoContrato = line.getElementsByTagName("Data")
                                 .item(8).getTextContent();
                     } else{
+                        /**
+                         * En este caso, es el importe el que tiene dividido
+                         * su valor en dos campos, uno para el número entero
+                         * y otro para la parte decimal
+                         */
                         objetoGenerico = line.getElementsByTagName("Data")
                                 .item(2).getTextContent();
                         objeto = line.getElementsByTagName("Data")
                                 .item(3).getTextContent();
+                        fechaStr = line.getElementsByTagName("Data")
+                                .item(4).getTextContent();
+                        /**
+                         * Excepciones de fecha
+                         */
+                        try{
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                            ).parse(fechaStr);
+                        } catch(ParseException e1){
+                            try{
+                                fechaAdjudicacion = new SimpleDateFormat(
+                                            "dd.MM.yyyy"
+                                ).parse(fechaStr);
+                            } catch (ParseException e2){
+                                fechaAdjudicacion = null;
+                            }
+                        }
                         importe = line.getElementsByTagName("Data")
                                 .item(5).getTextContent() + "," +
                                 line.getElementsByTagName("Data")
@@ -250,13 +291,27 @@ public class Ctrl {
                                 .item(8).getTextContent();
                     }
                 }
+                /**
+                 * Si el tamaño de la fila que nos devuelve es de
+                 * 10 columnas
+                 */
                 default ->
                 {
                     nif = line.getElementsByTagName("Data")
                             .item(0).getTextContent();
                     fechaAdjudicacion = null;
-                    if (line.getElementsByTagName("Data").item(2).getTextContent().equals(" S.L.")
-                            || line.getElementsByTagName("Data").item(2).getTextContent().equals(" SL")){
+                    /***
+                     * Si el índice 2 que nos devuleve es igual
+                     * a " SL" o " S.L."
+                     */
+                    if (line.getElementsByTagName("Data").
+                            item(2).
+                            getTextContent().equals(" S.L.")
+                            || 
+                            line.getElementsByTagName("Data").
+                                    item(2).getTextContent().
+                                    equals(" SL")){
+                        
                         adjudicatario = line.getElementsByTagName("Data")
                                 .item(1).getTextContent()+ 
                                 line.getElementsByTagName("Data")
@@ -265,6 +320,24 @@ public class Ctrl {
                                 .item(3).getTextContent();
                         objeto = line.getElementsByTagName("Data")
                                 .item(4).getTextContent();
+                        fechaStr = line.getElementsByTagName("Data")
+                                .item(5).getTextContent();
+                        /**
+                         * Excepciones de fecha
+                         */
+                        try{
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                            ).parse(fechaStr);
+                        } catch(ParseException e1){
+                            try{
+                                fechaAdjudicacion = new SimpleDateFormat(
+                                            "dd.MM.yyyy"
+                                ).parse(fechaStr);
+                            } catch (ParseException e2){
+                                fechaAdjudicacion = null;
+                            }
+                        }
                         importe = line.getElementsByTagName("Data").
                                 item(6).getTextContent() + "," +
                                 line.getElementsByTagName("Data")
@@ -273,18 +346,55 @@ public class Ctrl {
                                 .item(8).getTextContent();
                         tipoContrato = line.getElementsByTagName("Data")
                                 .item(9).getTextContent();
-                    } else if (line.getElementsByTagName("Data").item(3).getTextContent().charAt(0) == ' '){
-                        if (line.getElementsByTagName("Data").item(5).getTextContent().charAt(0) == ' '){
+                        
+                    /**
+                     * Si el primer carácter del String devuleto por el objeto
+                     * genérico es un espacio
+                     */    
+                    } else if (line.getElementsByTagName("Data")
+                            .item(3).getTextContent()
+                            .charAt(0) == ' '){
+                        
+                        /**
+                         * Si ocurre lo mismo con indice 5
+                         */
+                        if (line.getElementsByTagName("Data").
+                                item(5).
+                                getTextContent().
+                                charAt(0) == ' '){
+                            
                             adjudicatario = line.getElementsByTagName("Data")
                                     .item(1).getTextContent();
                             objetoGenerico = line.getElementsByTagName("Data")
                                     .item(2).getTextContent()+
                                     line.getElementsByTagName("Data")
                                             .item(3).getTextContent();
+                            /**
+                             *  Juntamos el cuarto y quinto índice 
+                             *  del documento
+                             */
                             objeto = line.getElementsByTagName("Data")
                                     .item(4).getTextContent() +
                                     line.getElementsByTagName("Data")
                                             .item(5).getTextContent();
+                            fechaStr = line.getElementsByTagName("Data")
+                                    .item(6).getTextContent();
+                            /**
+                             * Excepciones de fecha
+                             */
+                            try{
+                                fechaAdjudicacion = new SimpleDateFormat(
+                                                "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                                ).parse(fechaStr);
+                            } catch(ParseException e1){
+                                try{
+                                    fechaAdjudicacion = new SimpleDateFormat(
+                                                "dd.MM.yyyy"
+                                    ).parse(fechaStr);
+                                } catch (ParseException e2){
+                                    fechaAdjudicacion = null;
+                                }
+                            }
                             importe = line.getElementsByTagName("Data")
                                     .item(7).getTextContent();
                             proveedoresConsultados = line.getElementsByTagName("Data")
@@ -292,6 +402,12 @@ public class Ctrl {
                             tipoContrato = line.getElementsByTagName("Data")
                                     .item(9).getTextContent();
                         } else{
+                            /***
+                             * En este caso, de nuevo el problema se encuentra
+                             * en el importe (al igual que en otros registros
+                             * de distinto tamaño de columnas, que también
+                             * contenían este error)
+                             */
                             adjudicatario = line.getElementsByTagName("Data")
                                     .item(1).getTextContent();
                             objetoGenerico = line.getElementsByTagName("Data")
@@ -300,6 +416,24 @@ public class Ctrl {
                                             .item(3).getTextContent();
                             objeto = line.getElementsByTagName("Data")
                                     .item(4).getTextContent();
+                            fechaStr = line.getElementsByTagName("Data")
+                                    .item(5).getTextContent();
+                            /**
+                             * Excepciones de fecha
+                             */
+                            try{
+                                fechaAdjudicacion = new SimpleDateFormat(
+                                                "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                                ).parse(fechaStr);
+                            } catch(ParseException e1){
+                                try{
+                                    fechaAdjudicacion = new SimpleDateFormat(
+                                                "dd.MM.yyyy"
+                                    ).parse(fechaStr);
+                                } catch (ParseException e2){
+                                    fechaAdjudicacion = null;
+                                }
+                            }
                             importe = line.getElementsByTagName("Data").
                                     item(6).getTextContent() + "," +
                                     line.getElementsByTagName("Data")
@@ -311,6 +445,13 @@ public class Ctrl {
                         }
                         
                     } else {
+                        /**
+                         * Si el primer carácter del String devuleto por el objeto
+                         * genérico NO es un espacio, objetoGenerico será igual
+                         * al valor del tercer y cuarto nodo juntos.
+                         * Importe también nos lo devuelve dividido en entero
+                         * y decimal, lo juntamos.
+                         */
                         adjudicatario = line.getElementsByTagName("Data")
                                 .item(1).getTextContent();
                         objetoGenerico = line.getElementsByTagName("Data")
@@ -319,6 +460,24 @@ public class Ctrl {
                                         .item(3).getTextContent();
                         objeto = line.getElementsByTagName("Data")
                                 .item(4).getTextContent();
+                        fechaStr = line.getElementsByTagName("Data")
+                                .item(5).getTextContent();
+                        /**
+                         * Excepciones de fecha
+                         */
+                        try{
+                            fechaAdjudicacion = new SimpleDateFormat(
+                                            "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                            ).parse(fechaStr);
+                        } catch(ParseException e1){
+                            try{
+                                fechaAdjudicacion = new SimpleDateFormat(
+                                            "dd.MM.yyyy"
+                                ).parse(fechaStr);
+                            } catch (ParseException e2){
+                                fechaAdjudicacion = null;
+                            }
+                        }
                         importe = line.getElementsByTagName("Data").
                                 item(6).getTextContent() + "," +
                                 line.getElementsByTagName("Data")
@@ -350,12 +509,21 @@ public class Ctrl {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.newDocument();
             
+            //creamos rootElement como la raíz de nuestro XML
             Element rootElement = doc.createElement("contratos");
             doc.appendChild(rootElement);
             
+            /**
+             * Vamos creando las filas
+             */
             for (FilaSinTipoContrato fila: listaDatos){
+                // objeto que usaremos para manipular la fila
                 Element filaElement = doc.createElement("contrato");
                 
+                /**
+                 * le agregamos a la fila el elemento creado para el nif
+                 * y así con todos los demás
+                 */
                 Element nifElement = doc.createElement("nif");
                 nifElement.appendChild(doc.createTextNode(fila.getNif()));
                 filaElement.appendChild(nifElement);
@@ -387,15 +555,27 @@ public class Ctrl {
                 proveedoresConsultadosElement.appendChild(doc.createTextNode(fila.getProveedoresConsultados()));
                 filaElement.appendChild(proveedoresConsultadosElement);
                 
+                //finalmente, la fila completada la agregamos al nodo raíz
                 rootElement.appendChild(filaElement);
             }
-            
+            /**
+             * Transformamos el documento en el XML result
+             * doc
+             * TransformerFactory as TF
+             * Transformer as T = TF.new
+             * DOMSource (doc) as S
+             * StreamResult as r = new(File)
+             * T.transform(S, r)
+             */
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File("datos del gobierno sobre contratos a menores.xml"));
             transformer.transform(source, result);
-            
+            /**
+             * Nos proporciona un mensaje de diálogo que nos confirma
+             * que el archivo se ha generado correctamente.
+             */
             JOptionPane.showMessageDialog(null, "Archivo generado correctamente");
         } catch (ParserConfigurationException | TransformerException e){
             e.printStackTrace();

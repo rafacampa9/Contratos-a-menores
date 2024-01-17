@@ -11,17 +11,23 @@ import java.util.Date;
  * @author rafacampa9
  */
 public class FilaSinTipoContrato{
-    // Atributos
+    // ***********************************ATRIBUTOS********************************************
     private String nif, adjudicatario, objetoGenerico, objeto, importe, proveedoresConsultados;
     private Date fechaAdjudicacion;
 
     
-    // CONSTRUCTORES
+    
+    
+    
+    
+    //**********************************CONSTRUCTORES********************************************
     public FilaSinTipoContrato() {
     }
     
 
-    public FilaSinTipoContrato(String nif, String adjudicatario, String objetoGenerico, String objeto, String importe, String proveedoresConsultados, Date fechaAdjudicacion) {
+    public FilaSinTipoContrato(String nif, String adjudicatario, 
+            String objetoGenerico, String objeto, String importe, 
+            String proveedoresConsultados, Date fechaAdjudicacion) {
         this.nif = nif;
         this.adjudicatario = adjudicatario;
         this.objetoGenerico = objetoGenerico;
@@ -32,7 +38,10 @@ public class FilaSinTipoContrato{
     }
 
     
-    // GETTER AND SETTER
+    
+    
+    
+    // ***************************GETTER AND SETTER*********************************
     public String getNif() {
         return nif;
     }
@@ -89,11 +98,24 @@ public class FilaSinTipoContrato{
         this.fechaAdjudicacion = fechaAdjudicacion;
     }
     
-    // TOSTRING
+    
+    
+    
+    
+    
+    //******************************* TOSTRING**************************************
 
     @Override
     public String toString() {
-        return "FilaSinTipoContrato{" + "nif=" + nif + ", adjudicatario=" + adjudicatario + ", objetoGenerico=" + objetoGenerico + ", objeto=" + objeto + ", importe=" + importe + ", proveedoresConsultados=" + proveedoresConsultados + ", fechaAdjudicacion=" + fechaAdjudicacion + '}';
+        return "FilaSinTipoContrato{"
+                + "" + "nif=" + nif 
+                + ", adjudicatario=" + adjudicatario 
+                + ", objetoGenerico=" + objetoGenerico 
+                + ", objeto=" + objeto 
+                + ", importe=" + importe 
+                + ", proveedoresConsultados=" + proveedoresConsultados 
+                + ", fechaAdjudicacion=" + fechaAdjudicacion + 
+                '}';
     }
     
     

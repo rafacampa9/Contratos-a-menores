@@ -18,18 +18,38 @@ import org.xml.sax.SAXException;
  */
 public class FicheroXML {
     
-    
+    /**
+     * Nos carga el fichero XML en un 
+     * Document para poder manipularlo.
+     * 
+     * Le pasamos el path del fichero XML por
+     * parámetro
+     * 
+     * 
+     * @param path
+     * @return 
+     */
     public Document cargarFicheroXML(String path){
         try{
+            /**
+             * Proceso por defecto para cargar un fichero XML:
+             * 
+             * DocumentBuilderFactory>DocumentBuilder>Document
+             */
             DocumentBuilderFactory factory =  DocumentBuilderFactory.newInstance();
-            
+            /**
+             * Ignoramos los espacios en blanco contenidos entre elementos
+             */
             factory.setIgnoringElementContentWhitespace(true);
-        
+            
             DocumentBuilder builder = factory.newDocumentBuilder();
             File file = new File(path);
         
             Document doc = builder.parse(file);
             return doc;
+            /**
+             * Excepciones 
+             */
         } catch (ParserConfigurationException | SAXException | IOException ex){
             ex.printStackTrace();
             return null;
